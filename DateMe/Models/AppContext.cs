@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Movies.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,16 @@ namespace DateMe.Models
         }
 
         public DbSet<ApplicationResponse> responses { get; set; }
+        public DbSet<Director> Directors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
+            mb.Entity<Director>().HasData(
+                new Director { DirectorID=1, DirectorName="Christopher Nolan"},
+                new Director { DirectorID = 2, DirectorName = "makato shinkai" }
+            );
+
+
             mb.Entity<ApplicationResponse>().HasData(
 
                 new ApplicationResponse
@@ -25,7 +33,7 @@ namespace DateMe.Models
                     Category = "Action",
                     Title = "The Dark Knight",
                     Year = 2008,
-                    Director = "Christopher Nolan",
+                    DirectorID = 1,
                     Rating = "PG-13",
                     Edited = false,
                     Lent = "",
@@ -37,7 +45,7 @@ namespace DateMe.Models
                     Category = "Space",
                     Title = "Interstellar",
                     Year = 2014,
-                    Director = "Christopher Nolan",
+                    DirectorID = 1,
                     Rating = "PG-13",
                     Edited = false,
                     Lent = "",
@@ -49,7 +57,7 @@ namespace DateMe.Models
                     Category = "Drama",
                     Title = "kimi no na ha",
                     Year = 2016,
-                    Director = "Makoto Shinkai",
+                    DirectorID = 2,
                     Rating = "PG-13",
                     Edited = false,
                     Lent = "",

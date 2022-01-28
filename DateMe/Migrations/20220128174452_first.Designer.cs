@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DateMe.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20220125171453_first")]
+    [Migration("20220128174452_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,8 @@ namespace DateMe.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Director")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("DirectorID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Edited")
                         .HasColumnType("INTEGER");
@@ -53,6 +52,8 @@ namespace DateMe.Migrations
 
                     b.HasKey("MovieId");
 
+                    b.HasIndex("DirectorID");
+
                     b.ToTable("responses");
 
                     b.HasData(
@@ -60,7 +61,7 @@ namespace DateMe.Migrations
                         {
                             MovieId = 1,
                             Category = "Action",
-                            Director = "Christopher Nolan",
+                            DirectorID = 1,
                             Edited = false,
                             Lent = "",
                             Notes = "im batman",
@@ -72,7 +73,7 @@ namespace DateMe.Migrations
                         {
                             MovieId = 2,
                             Category = "Space",
-                            Director = "Christopher Nolan",
+                            DirectorID = 1,
                             Edited = false,
                             Lent = "",
                             Notes = "im not batman",
@@ -84,7 +85,7 @@ namespace DateMe.Migrations
                         {
                             MovieId = 3,
                             Category = "Drama",
-                            Director = "Makoto Shinkai",
+                            DirectorID = 2,
                             Edited = false,
                             Lent = "",
                             Notes = "Your Name.",
@@ -92,6 +93,41 @@ namespace DateMe.Migrations
                             Title = "kimi no na ha",
                             Year = 2016
                         });
+                });
+
+            modelBuilder.Entity("Movies.Models.Director", b =>
+                {
+                    b.Property<int>("DirectorID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DirectorName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DirectorID");
+
+                    b.ToTable("Directors");
+
+                    b.HasData(
+                        new
+                        {
+                            DirectorID = 1,
+                            DirectorName = "Christopher Nolan"
+                        },
+                        new
+                        {
+                            DirectorID = 2,
+                            DirectorName = "makato shinkai"
+                        });
+                });
+
+            modelBuilder.Entity("DateMe.Models.ApplicationResponse", b =>
+                {
+                    b.HasOne("Movies.Models.Director", "Director")
+                        .WithMany()
+                        .HasForeignKey("DirectorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

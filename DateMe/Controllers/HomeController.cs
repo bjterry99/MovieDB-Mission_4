@@ -12,13 +12,11 @@ namespace DateMe.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private AppContext blahContext { get; set; }
+        private AppContext daContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, AppContext someName)
+        public HomeController(AppContext someName)
         {
-            _logger = logger;
-            blahContext = someName;
+            daContext = someName;
         }
 
         public IActionResult Index()
@@ -34,22 +32,28 @@ namespace DateMe.Controllers
         [HttpGet]
         public IActionResult Application()
         {
+            ViewBag.Directors = daContext.Directors.ToList();
+
             return View();
         }
 
         [HttpPost]
         public IActionResult Application(ApplicationResponse ar)
         {
-            blahContext.Add(ar);
-            blahContext.SaveChanges();
+            daContext.Add(ar);
+            daContext.SaveChanges();
 
             return View("Confirm", ar);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult WaitList()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var movie_list = daContext.responses
+                .Where(x => x.Rating == "PG-13")
+                .OrderBy(x => x.Title)
+                .ToList();
+
+            return View(movie_list);
         }
     }
 }

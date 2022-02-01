@@ -1,5 +1,6 @@
 ﻿using DateMe.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace DateMe.Controllers
         public IActionResult Application()
         {
             ViewBag.Directors = daContext.Directors.ToList();
+            ViewBag.Categories = daContext.Categories.ToList();
 
             return View();
         }
@@ -40,20 +42,69 @@ namespace DateMe.Controllers
         [HttpPost]
         public IActionResult Application(ApplicationResponse ar)
         {
-            daContext.Add(ar);
-            daContext.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                daContext.Add(ar);
+                daContext.SaveChanges();
 
-            return View("Confirm", ar);
+                return View("Confirm", ar);
+            }
+            else
+            {
+                ViewBag.Directors = daContext.Directors.ToList();
+                ViewBag.Categories = daContext.Categories.ToList();
+                return View(ar);
+            }
         }
 
+        [HttpGet]
         public IActionResult WaitList()
         {
             var movie_list = daContext.responses
-                .Where(x => x.Rating == "PG-13")
+                .Include(x => x.Director)
+                .Include(x => x.Category)
+                //.Where(x => x.Rating == "PG-13")
                 .OrderBy(x => x.Title)
                 .ToList();
 
             return View(movie_list);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int movieid)
+        {
+            ViewBag.Directors = daContext.Directors.ToList();
+            ViewBag.Categories = daContext.Categories.ToList();
+
+            var movie = daContext.responses.Single(x => x.MovieId == movieid);
+
+            return View("Application", movie);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(ApplicationResponse moviestuff)
+        {
+            daContext.Update(moviestuff);
+            daContext.SaveChanges();
+
+            return RedirectToAction("WaitList");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int movieid)
+        {
+            var movie = daContext.responses.Single(x => x.MovieId == movieid);
+
+            return View(movie);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(ApplicationResponse ar)
+        {
+            daContext.responses.Remove(ar);
+            daContext.SaveChanges();
+
+            return RedirectToAction("WaitList");
         }
     }
 }

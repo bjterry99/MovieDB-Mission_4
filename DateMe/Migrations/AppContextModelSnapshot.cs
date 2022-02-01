@@ -21,9 +21,8 @@ namespace DateMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("DirectorID")
                         .HasColumnType("INTEGER");
@@ -50,6 +49,8 @@ namespace DateMe.Migrations
 
                     b.HasKey("MovieId");
 
+                    b.HasIndex("CategoryID");
+
                     b.HasIndex("DirectorID");
 
                     b.ToTable("responses");
@@ -58,7 +59,7 @@ namespace DateMe.Migrations
                         new
                         {
                             MovieId = 1,
-                            Category = "Action",
+                            CategoryID = 1,
                             DirectorID = 1,
                             Edited = false,
                             Lent = "",
@@ -70,7 +71,7 @@ namespace DateMe.Migrations
                         new
                         {
                             MovieId = 2,
-                            Category = "Space",
+                            CategoryID = 1,
                             DirectorID = 1,
                             Edited = false,
                             Lent = "",
@@ -82,7 +83,7 @@ namespace DateMe.Migrations
                         new
                         {
                             MovieId = 3,
-                            Category = "Drama",
+                            CategoryID = 3,
                             DirectorID = 2,
                             Edited = false,
                             Lent = "",
@@ -93,7 +94,63 @@ namespace DateMe.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Movies.Models.Director", b =>
+            modelBuilder.Entity("DateMe.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryID = 1,
+                            CategoryName = "Action/Adventure"
+                        },
+                        new
+                        {
+                            CategoryID = 2,
+                            CategoryName = "Comedy"
+                        },
+                        new
+                        {
+                            CategoryID = 3,
+                            CategoryName = "Drama"
+                        },
+                        new
+                        {
+                            CategoryID = 4,
+                            CategoryName = "Family"
+                        },
+                        new
+                        {
+                            CategoryID = 5,
+                            CategoryName = "Horror/Suspense"
+                        },
+                        new
+                        {
+                            CategoryID = 6,
+                            CategoryName = "Misc."
+                        },
+                        new
+                        {
+                            CategoryID = 7,
+                            CategoryName = "Television"
+                        },
+                        new
+                        {
+                            CategoryID = 8,
+                            CategoryName = "VHS"
+                        });
+                });
+
+            modelBuilder.Entity("DateMe.Models.Director", b =>
                 {
                     b.Property<int>("DirectorID")
                         .ValueGeneratedOnAdd()
@@ -121,7 +178,13 @@ namespace DateMe.Migrations
 
             modelBuilder.Entity("DateMe.Models.ApplicationResponse", b =>
                 {
-                    b.HasOne("Movies.Models.Director", "Director")
+                    b.HasOne("DateMe.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DateMe.Models.Director", "Director")
                         .WithMany()
                         .HasForeignKey("DirectorID")
                         .OnDelete(DeleteBehavior.Cascade)

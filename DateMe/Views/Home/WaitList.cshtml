@@ -4,7 +4,7 @@
 
 @model List<ApplicationResponse>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-striped">
     <thead class="font-weight-bold">
         <tr>
             <td>Category</td>
@@ -22,14 +22,17 @@
         @foreach (var x in Model)
             {
         <tr>
-            <td>@x.Category</td>
+            <td>@x.Category.CategoryName</td>
             <td>@x.Title</td>
             <td>@x.Year</td>
-            <td>@x.Director</td>
+            <td>@x.Director.DirectorName</td>
             <td>@x.Rating</td>
             <td>@x.Edited</td>
             <td>@x.Lent</td>
             <td>@x.Notes</td>
+
+            <td><a asp-controller="Home" asp-action="Edit" asp-route-movieid="@x.MovieId">Edit</a></td>
+            <td><a asp-controller="Home" asp-action="Delete" asp-route-movieid="@x.MovieId">Delete</a></td>
         </tr>
             }
     </tbody>

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DateMe.Models
 {
-    public class Director
+    public class Category
     {
         [Key]
         [Required]
-        public int DirectorID { get; set; }
-        public string DirectorName { get; set; }
+        public int CategoryID { get; set; }
+        public string CategoryName { get; set; }
     }
 }

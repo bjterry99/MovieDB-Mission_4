@@ -1,4 +1,4 @@
-﻿using Movies.Models;
+﻿using DateMe.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,10 +13,7 @@ namespace DateMe.Models
         [Required]
         public int MovieId { get; set; }
 
-        [Required]
-        public string Category { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "What year did the movie release?")]
         public string Title { get; set; }
 
         [Required]
@@ -29,8 +26,11 @@ namespace DateMe.Models
         public string Notes { get; set; }
 
         [Required]
+        public int CategoryID { get; set; }
+        public Category Category { get; set; }
+
+        [Required]
         public int DirectorID { get; set; }
         public Director Director { get; set; }
-
     }
 }
